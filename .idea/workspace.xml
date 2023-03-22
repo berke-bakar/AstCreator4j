@@ -5,11 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="09c5f726-423e-4a23-be00-a3b4e7e0cdc8" name="Changes" comment="Added necessary libraries and implemented AstCreator">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/berkebakar/AstCreator/AstCreator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/berkebakar/AstCreator/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/berkebakar/AstCreator/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/berkebakar/AstCreator/AstCreator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/berkebakar/AstCreator/AstCreator.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -121,7 +119,7 @@
       <option name="presentableId" value="Default" />
       <updated>1679422818578</updated>
       <workItem from="1679422820141" duration="20478000" />
-      <workItem from="1679468254875" duration="3246000" />
+      <workItem from="1679468254875" duration="4773000" />
     </task>
     <task id="LOCAL-00001" summary="Added logic for parsing command line arguments">
       <created>1679431475656</created>
@@ -130,7 +128,14 @@
       <option name="project" value="LOCAL" />
       <updated>1679431475656</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Added necessary libraries and implemented AstCreator">
+      <created>1679471513683</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1679471513683</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

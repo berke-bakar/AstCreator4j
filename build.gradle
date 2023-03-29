@@ -15,6 +15,7 @@ dependencies {
     implementation 'org.eclipse.jdt:org.eclipse.jdt.core:3.33.0'
     implementation 'org.apache.commons:commons-text:1.10.0'
     implementation 'com.google.code.gson:gson:2.10.1'
+    implementation 'guru.nidi:graphviz-java-all-j2v8:0.18.1'
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'

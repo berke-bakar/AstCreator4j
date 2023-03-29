@@ -71,12 +71,20 @@ public class Main {
     private static Options createCliOptions() {
         Options paramOptions = new Options();
         paramOptions.addOption(new Option("f", "file", true, "Java file that contains the function to be converted into AST."));
-        paramOptions.addOption(new Option("d", "directory", true, "directory that contains .java files to be converted into AST."));
+        paramOptions.addOption(new Option("d", "directory", true, "Directory that contains .java files to be converted into AST."));
         paramOptions.addOption(new Option("o", "outputDir", true, "Output directory to save generated ASTs. If option is not given, then Java files directory will be used."));
+        paramOptions.addOption(new Option("w", "width", true, "Width of the output PNG, if not given 224px will be used as this project is for generating data for ResNet50."));
+        paramOptions.addOption(new Option("h", "height", true, "Height of the output PNG, if not given 224px will be used as this project is for generating data for ResNet50."));
+        paramOptions.addOption(new Option("help", "help", false, "Prints this help text."));
         return paramOptions;
     }
 
     private static void validateOptions(CommandLine line) {
+        if (line.hasOption("help")){
+            printHelpMenu();
+            System.exit(0);
+        }
+
         if (!line.hasOption("f") && !line.hasOption("d")) {
             System.err.println("Need to provide at least one of -f/--file or -d/--directory options. Giving both will result in error.");
             System.exit(1);
@@ -131,6 +139,12 @@ public class Main {
             return path.getParent();
         } else {
             return path;
+        }
+    }
+
+    private static void printHelpMenu(){
+        for (Option option : createCliOptions().getOptions()){
+            System.out.printf("-%-5s --%-10s      %-50s\n", option.getOpt(), option.getLongOpt(), option.getDescription());
         }
     }
 

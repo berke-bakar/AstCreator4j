@@ -2,10 +2,12 @@ package com.berkebakar.AstCreator;
 
 import org.apache.commons.cli.*;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.stream.Stream;
 
 public class Main {
 
@@ -32,7 +34,33 @@ public class Main {
             } else { // if there is no --outputDir option defined then set the output directory as the input file(s)'s directory
                 outputPath = getParentPath(inputPath);
             }
-            System.out.println("Creating AST");
+
+            if (inputPath != null){
+                if (Files.isDirectory(inputPath)){ // walk through the directory
+                    try (Stream<Path> paths = Files.walk(inputPath)) {
+                        paths.filter(Files::isRegularFile)
+                                .filter(path -> path.toString().endsWith(".java"))
+                                .forEach(path -> {
+                                    System.out.println("Creating AST for " + path.getFileName().toString());
+                                    AstCreator.createAst(path, outputPath);
+                                    System.out.println("Generated AST for " + path.getFileName().toString());
+                                }); // Replace with your own logic
+                    } catch (IOException e) {
+                        System.err.println(e.getMessage());
+                        System.exit(6);
+                    }
+                }
+                else { // single file
+                    System.out.println("Creating AST for " + inputPath.getFileName().toString());
+                    AstCreator.createAst(inputPath, outputPath);
+                    System.out.println("Generated AST for " + inputPath.getFileName().toString());
+                }
+            }
+            else { // should not be possible we validate inputs before
+                System.err.println("Input path is null, exiting...");
+                System.exit(5);
+            }
+
             AstCreator.createAst(inputPath, outputPath);
         } catch (ParseException e) {
             System.err.println(e.getMessage());

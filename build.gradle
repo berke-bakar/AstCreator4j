@@ -36,3 +36,16 @@ test {
 application {
     mainClass = "com.berkebakar.AstCreator.Main"
 }
+
+tasks.register('copyConfig', Copy) {
+    dependsOn 'installDist'
+    from 'src/main/resources'
+    def installationDir = project.tasks.getByName('installDist').destinationDir // get the installation directory from the installDist task
+    into installationDir // this points to build/install/projectName
+    into('bin') {
+        from('src/main/resources')
+    }
+    include("*.properties")
+}
+
+tasks.installDist.finalizedBy(copyConfig)

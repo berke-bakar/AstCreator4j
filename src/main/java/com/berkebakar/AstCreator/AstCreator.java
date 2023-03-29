@@ -14,7 +14,6 @@ import java.util.Map;
 public class AstCreator {
     public static void createAst(Path inputPath, Path outputPath) {
         try {
-            //TODO: Generalize the method to handle directories
             String sourceCode = Files.readString(inputPath);
             ASTParser parser = ASTParser.newParser(AST.JLS19);
             parser.setSource(sourceCode.toCharArray());
@@ -49,6 +48,8 @@ public class AstCreator {
 
         } catch (IOException e) {
             System.err.println("An error occurred while writing to file: " + e.getMessage());
+        } catch (GraphvizException e){
+            System.err.println("An error occurred while creating AST for " + inputPath.getFileName().toString() + " Message: " + e.getMessage());
         }
     }
 }

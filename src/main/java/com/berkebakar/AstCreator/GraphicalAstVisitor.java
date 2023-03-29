@@ -35,7 +35,7 @@ public class GraphicalAstVisitor extends ASTVisitor {
                 MethodDeclaration methodDeclaration = (MethodDeclaration) node;
                 stringBuilder.append("Name: ").append(methodDeclaration.getName().getIdentifier()).append("\n");
                 stringBuilder.append(formatListProperties("Parameters", methodDeclaration.parameters()));
-                stringBuilder.append("Return Type: ").append(methodDeclaration.getReturnType2().toString());
+                stringBuilder.append("Return Type: ").append(methodDeclaration.getReturnType2());
             }
             case ASTNode.SINGLE_VARIABLE_DECLARATION -> {
                 SingleVariableDeclaration variableDeclaration = (SingleVariableDeclaration) node;
@@ -62,7 +62,7 @@ public class GraphicalAstVisitor extends ASTVisitor {
             }
             case ASTNode.FOR_STATEMENT -> {
                 ForStatement forStatement = (ForStatement) node;
-                stringBuilder.append("Condition: ").append(forStatement.getExpression().toString()).append("\n");
+                stringBuilder.append("Condition: ").append(forStatement.getExpression()).append("\n");
                 stringBuilder.append(formatListProperties("Update", forStatement.updaters()));
             }
             case ASTNode.IF_STATEMENT -> {
@@ -75,7 +75,7 @@ public class GraphicalAstVisitor extends ASTVisitor {
             }
             case ASTNode.RETURN_STATEMENT -> {
                 ReturnStatement returnStatement = (ReturnStatement) node;
-                stringBuilder.append("Returns: ").append(returnStatement.getExpression().toString());
+                stringBuilder.append("Returns: ").append(returnStatement.getExpression());
             }
             case ASTNode.SWITCH_CASE -> {
                 SwitchCase switchCase = (SwitchCase) node;

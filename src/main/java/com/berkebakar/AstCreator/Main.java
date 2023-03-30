@@ -73,8 +73,6 @@ public class Main {
         paramOptions.addOption(new Option("f", "file", true, "Java file that contains the function to be converted into AST."));
         paramOptions.addOption(new Option("d", "directory", true, "Directory that contains .java files to be converted into AST."));
         paramOptions.addOption(new Option("o", "outputDir", true, "Output directory to save generated ASTs. If option is not given, then Java files directory will be used."));
-        paramOptions.addOption(new Option("w", "width", true, "Width of the output PNG, if not given 224px will be used as this project is for generating data for ResNet50."));
-        paramOptions.addOption(new Option("h", "height", true, "Height of the output PNG, if not given 224px will be used as this project is for generating data for ResNet50."));
         paramOptions.addOption(new Option("help", "help", false, "Prints this help text."));
         return paramOptions;
     }
@@ -143,6 +141,8 @@ public class Main {
     }
 
     private static void printHelpMenu(){
+        System.out.println("Following are the commandline parameters of this tool. Additional settings");
+        System.out.println("can be done in config.properties file.");
         for (Option option : createCliOptions().getOptions()){
             System.out.printf("-%-5s --%-10s      %-50s\n", option.getOpt(), option.getLongOpt(), option.getDescription());
         }

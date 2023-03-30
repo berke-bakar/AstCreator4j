@@ -1,21 +1,28 @@
 package com.berkebakar.AstCreator;
 
+import guru.nidi.graphviz.attribute.Color;
 import guru.nidi.graphviz.attribute.Label;
+import guru.nidi.graphviz.attribute.Shape;
 import guru.nidi.graphviz.model.MutableGraph;
 import guru.nidi.graphviz.model.MutableNode;
 import org.eclipse.jdt.core.dom.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 import static guru.nidi.graphviz.model.Factory.mutGraph;
 import static guru.nidi.graphviz.model.Factory.mutNode;
 
 public class GraphicalAstVisitor extends ASTVisitor {
     private final MutableGraph graph;
+    private final Properties properties;
 
-    public GraphicalAstVisitor() {
+    public GraphicalAstVisitor(Properties properties) {
         super(false);
-        graph = mutGraph("AST").setDirected(true);
+        this.graph = mutGraph("AST").setDirected(true);
+        this.properties = properties;
     }
 
     public MutableGraph getGraph() {
@@ -25,88 +32,92 @@ public class GraphicalAstVisitor extends ASTVisitor {
     private String getNodeLabel(ASTNode node) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(node.getClass().getSimpleName()).append("\n");
-        switch (node.getNodeType()) {
-            case ASTNode.TYPE_DECLARATION -> {
-                TypeDeclaration typeDeclaration = (TypeDeclaration) node;
-                stringBuilder.append("Name: ").append(typeDeclaration.getName().getIdentifier());
-                stringBuilder.append("Kind: ").append(typeDeclaration.isInterface() ? "Interface" : "Class");
-            }
-            case ASTNode.METHOD_DECLARATION -> {
-                MethodDeclaration methodDeclaration = (MethodDeclaration) node;
-                stringBuilder.append("Name: ").append(methodDeclaration.getName().getIdentifier()).append("\n");
-                stringBuilder.append(formatListProperties("Parameters", methodDeclaration.parameters()));
-                stringBuilder.append("Return Type: ").append(methodDeclaration.getReturnType2());
-            }
-            case ASTNode.SINGLE_VARIABLE_DECLARATION -> {
-                SingleVariableDeclaration variableDeclaration = (SingleVariableDeclaration) node;
-                stringBuilder.append(formatListProperties("Modifier", variableDeclaration.modifiers()));
-                stringBuilder.append("Name: ").append(variableDeclaration.getName().getIdentifier()).append("\n");
-                stringBuilder.append("Type: ").append(variableDeclaration.getType().toString());
-            }
-            case ASTNode.ASSERT_STATEMENT -> {
-                AssertStatement assertStatement = (AssertStatement) node;
-                stringBuilder.append("Expression: ").append(assertStatement.getExpression().toString()).append("\n");
-                stringBuilder.append("Message: ").append(assertStatement.getMessage());
-            }
-            case ASTNode.DO_STATEMENT -> {
-                DoStatement doStatement = (DoStatement) node;
-                stringBuilder.append("Condition: ").append(doStatement.getExpression().toString());
-            }
-            case ASTNode.ENHANCED_FOR_STATEMENT -> {
-                EnhancedForStatement enhancedForStatement = (EnhancedForStatement) node;
-                stringBuilder.append("Expression: ").append(enhancedForStatement.getExpression().toString());
-            }
-            case ASTNode.EXPRESSION_STATEMENT -> {
-                ExpressionStatement expressionStatement = (ExpressionStatement) node;
-                stringBuilder.append("Expression: ").append(expressionStatement.getExpression().toString());
-            }
-            case ASTNode.FOR_STATEMENT -> {
-                ForStatement forStatement = (ForStatement) node;
-                stringBuilder.append("Condition: ").append(forStatement.getExpression()).append("\n");
-                stringBuilder.append(formatListProperties("Update", forStatement.updaters()));
-            }
-            case ASTNode.IF_STATEMENT -> {
-                IfStatement ifStatement = (IfStatement) node;
-                stringBuilder.append("Condition: ").append(ifStatement.getExpression().toString());
-            }
-            case ASTNode.LABELED_STATEMENT -> {
-                LabeledStatement labeledStatement = (LabeledStatement) node;
-                stringBuilder.append("Label: ").append(labeledStatement.getLabel().getIdentifier());
-            }
-            case ASTNode.RETURN_STATEMENT -> {
-                ReturnStatement returnStatement = (ReturnStatement) node;
-                stringBuilder.append("Returns: ").append(returnStatement.getExpression());
-            }
-            case ASTNode.SWITCH_CASE -> {
-                SwitchCase switchCase = (SwitchCase) node;
-                stringBuilder.append("isDefaultCase: ").append(switchCase.isDefault());
-                stringBuilder.append(formatListProperties("Condition", switchCase.expressions()));
-            }
-            case ASTNode.SWITCH_STATEMENT -> {
-                SwitchStatement switchStatement = (SwitchStatement) node;
-                stringBuilder.append("Condition: ").append(switchStatement.getExpression().toString());
-            }
-            case ASTNode.SYNCHRONIZED_STATEMENT -> {
-                SynchronizedStatement synchronizedStatement = (SynchronizedStatement) node;
-                stringBuilder.append("Lock: ").append(synchronizedStatement.getExpression().toString());
-            }
-            case ASTNode.THROW_STATEMENT -> {
-                ThrowStatement throwStatement = (ThrowStatement) node;
-                stringBuilder.append("Throws:").append(throwStatement.getExpression().toString());
-            }
-            case ASTNode.VARIABLE_DECLARATION_STATEMENT -> {
-                VariableDeclarationStatement variableDeclaration = (VariableDeclarationStatement) node;
-                stringBuilder.append(formatListProperties("Modifier", variableDeclaration.modifiers()));
-                stringBuilder.append("Type: ").append(variableDeclaration.getType().toString()).append("\n");
-                stringBuilder.append("Name: ");
-                List fragments = variableDeclaration.fragments();
-                for (int i = 0; i < fragments.size(); i++){
-                    stringBuilder.append(((VariableDeclarationFragment) fragments.get(i)).getName()).append(i == fragments.size() - 1 ? "" : ", ");
+
+        // print details if user declared output.detailed in properties file
+        if (Boolean.parseBoolean(properties.getProperty("output.detailed", "false"))) {
+            switch (node.getNodeType()) {
+                case ASTNode.TYPE_DECLARATION -> {
+                    TypeDeclaration typeDeclaration = (TypeDeclaration) node;
+                    stringBuilder.append("Name: ").append(typeDeclaration.getName().getIdentifier());
+                    stringBuilder.append("Kind: ").append(typeDeclaration.isInterface() ? "Interface" : "Class");
                 }
-            }
-            case ASTNode.WHILE_STATEMENT -> {
-                WhileStatement whileStatement = (WhileStatement) node;
-                stringBuilder.append("Condition: ").append(whileStatement.getExpression().toString());
+                case ASTNode.METHOD_DECLARATION -> {
+                    MethodDeclaration methodDeclaration = (MethodDeclaration) node;
+                    stringBuilder.append("Name: ").append(methodDeclaration.getName().getIdentifier()).append("\n");
+                    stringBuilder.append(formatListProperties("Parameters", methodDeclaration.parameters()));
+                    stringBuilder.append("Return Type: ").append(methodDeclaration.getReturnType2());
+                }
+                case ASTNode.SINGLE_VARIABLE_DECLARATION -> {
+                    SingleVariableDeclaration variableDeclaration = (SingleVariableDeclaration) node;
+                    stringBuilder.append(formatListProperties("Modifier", variableDeclaration.modifiers()));
+                    stringBuilder.append("Name: ").append(variableDeclaration.getName().getIdentifier()).append("\n");
+                    stringBuilder.append("Type: ").append(variableDeclaration.getType().toString());
+                }
+                case ASTNode.ASSERT_STATEMENT -> {
+                    AssertStatement assertStatement = (AssertStatement) node;
+                    stringBuilder.append("Expression: ").append(assertStatement.getExpression().toString()).append("\n");
+                    stringBuilder.append("Message: ").append(assertStatement.getMessage());
+                }
+                case ASTNode.DO_STATEMENT -> {
+                    DoStatement doStatement = (DoStatement) node;
+                    stringBuilder.append("Condition: ").append(doStatement.getExpression().toString());
+                }
+                case ASTNode.ENHANCED_FOR_STATEMENT -> {
+                    EnhancedForStatement enhancedForStatement = (EnhancedForStatement) node;
+                    stringBuilder.append("Expression: ").append(enhancedForStatement.getExpression().toString());
+                }
+                case ASTNode.EXPRESSION_STATEMENT -> {
+                    ExpressionStatement expressionStatement = (ExpressionStatement) node;
+                    stringBuilder.append("Expression: ").append(expressionStatement.getExpression().toString());
+                }
+                case ASTNode.FOR_STATEMENT -> {
+                    ForStatement forStatement = (ForStatement) node;
+                    stringBuilder.append("Condition: ").append(forStatement.getExpression()).append("\n");
+                    stringBuilder.append(formatListProperties("Update", forStatement.updaters()));
+                }
+                case ASTNode.IF_STATEMENT -> {
+                    IfStatement ifStatement = (IfStatement) node;
+                    stringBuilder.append("Condition: ").append(ifStatement.getExpression().toString());
+                }
+                case ASTNode.LABELED_STATEMENT -> {
+                    LabeledStatement labeledStatement = (LabeledStatement) node;
+                    stringBuilder.append("Label: ").append(labeledStatement.getLabel().getIdentifier());
+                }
+                case ASTNode.RETURN_STATEMENT -> {
+                    ReturnStatement returnStatement = (ReturnStatement) node;
+                    stringBuilder.append("Returns: ").append(returnStatement.getExpression());
+                }
+                case ASTNode.SWITCH_CASE -> {
+                    SwitchCase switchCase = (SwitchCase) node;
+                    stringBuilder.append("isDefaultCase: ").append(switchCase.isDefault());
+                    stringBuilder.append(formatListProperties("Condition", switchCase.expressions()));
+                }
+                case ASTNode.SWITCH_STATEMENT -> {
+                    SwitchStatement switchStatement = (SwitchStatement) node;
+                    stringBuilder.append("Condition: ").append(switchStatement.getExpression().toString());
+                }
+                case ASTNode.SYNCHRONIZED_STATEMENT -> {
+                    SynchronizedStatement synchronizedStatement = (SynchronizedStatement) node;
+                    stringBuilder.append("Lock: ").append(synchronizedStatement.getExpression().toString());
+                }
+                case ASTNode.THROW_STATEMENT -> {
+                    ThrowStatement throwStatement = (ThrowStatement) node;
+                    stringBuilder.append("Throws:").append(throwStatement.getExpression().toString());
+                }
+                case ASTNode.VARIABLE_DECLARATION_STATEMENT -> {
+                    VariableDeclarationStatement variableDeclaration = (VariableDeclarationStatement) node;
+                    stringBuilder.append(formatListProperties("Modifier", variableDeclaration.modifiers()));
+                    stringBuilder.append("Type: ").append(variableDeclaration.getType().toString()).append("\n");
+                    stringBuilder.append("Name: ");
+                    List fragments = variableDeclaration.fragments();
+                    for (int i = 0; i < fragments.size(); i++) {
+                        stringBuilder.append(((VariableDeclarationFragment) fragments.get(i)).getName()).append(i == fragments.size() - 1 ? "" : ", ");
+                    }
+                }
+                case ASTNode.WHILE_STATEMENT -> {
+                    WhileStatement whileStatement = (WhileStatement) node;
+                    stringBuilder.append("Condition: ").append(whileStatement.getExpression().toString());
+                }
             }
         }
 
@@ -114,7 +125,18 @@ public class GraphicalAstVisitor extends ASTVisitor {
     }
 
     private void addNode(ASTNode node) {
-        graph.add(mutNode(Integer.toString(node.hashCode())).add(Label.of(getNodeLabel(node))));
+        Shape nodeShape = ShapeMap.getShape(properties.getProperty(node.getClass().getSimpleName() + ".shape", "box"));
+        Color nodeColor = Color.named(properties.getProperty(node.getClass().getSimpleName() + ".color", "red"));
+
+        if (properties.getProperty("output.fillNodes", "true").equals("true")) {
+            nodeColor = nodeColor.fill();
+        }
+
+        graph.add(mutNode(Integer.toString(node.hashCode()))
+                .add(Label.of(getNodeLabel(node)))
+                .add(nodeColor)
+                .add(nodeShape)
+        );
     }
 
     private void addEdge(ASTNode source, ASTNode target) {
@@ -138,10 +160,10 @@ public class GraphicalAstVisitor extends ASTVisitor {
         return null;
     }
 
-    private String formatListProperties(String propertyName, List propertyValueList){
+    private String formatListProperties(String propertyName, List propertyValueList) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(propertyName).append(": ");
-        for (int i=0; i < propertyValueList.size(); i++){
+        for (int i = 0; i < propertyValueList.size(); i++) {
             stringBuilder.append(propertyValueList.get(i).toString()).append(i == propertyValueList.size() - 1 ? "" : ", ");
         }
         stringBuilder.append("\n");
@@ -319,10 +341,72 @@ public class GraphicalAstVisitor extends ASTVisitor {
         return true;
     }
 
-    @Override
-    public boolean visit(EmptyStatement node) {
-        addNode(node);
-        addEdge(getParentInGraph(node), node);
-        return true;
+    private static class ShapeMap {
+        private static final Map<String, Shape> shapeMap = new HashMap<>();
+
+        static {
+            shapeMap.put("box", Shape.BOX);
+            shapeMap.put("ellipse", Shape.ELLIPSE);
+            shapeMap.put("oval", Shape.OVAL);
+            shapeMap.put("circle", Shape.CIRCLE);
+            shapeMap.put("point", Shape.POINT);
+            shapeMap.put("egg", Shape.EGG);
+            shapeMap.put("triangle", Shape.TRIANGLE);
+            shapeMap.put("plaintext", Shape.PLAIN_TEXT);
+            shapeMap.put("plain", Shape.PLAIN);
+            shapeMap.put("diamond", Shape.DIAMOND);
+            shapeMap.put("trapezium", Shape.TRAPEZIUM);
+            shapeMap.put("parallelogram", Shape.PARALLELOGRAM);
+            shapeMap.put("house", Shape.HOUSE);
+            shapeMap.put("pentagon", Shape.PENTAGON);
+            shapeMap.put("hexagon", Shape.HEXAGON);
+            shapeMap.put("septagon", Shape.SEPTAGON);
+            shapeMap.put("octagon", Shape.OCTAGON);
+            shapeMap.put("doublecircle", Shape.DOUBLE_CIRCLE);
+            shapeMap.put("doubleoctagon", Shape.DOUBLE_OCTAGON);
+            shapeMap.put("tripleoctagon", Shape.TRIPLE_OCTAGON);
+            shapeMap.put("invtriangle", Shape.INV_TRIANGLE);
+            shapeMap.put("invtrapezium", Shape.INV_TRAPEZIUM);
+            shapeMap.put("invhouse", Shape.INV_HOUSE);
+            shapeMap.put("Mdiamond", Shape.M_DIAMOND);
+            shapeMap.put("Msquare", Shape.M_SQUARE);
+            shapeMap.put("Mcircle", Shape.M_CIRCLE);
+            shapeMap.put("rect", Shape.RECT);
+            shapeMap.put("rectangle", Shape.RECTANGLE);
+            shapeMap.put("square", Shape.SQUARE);
+            shapeMap.put("star", Shape.STAR);
+            shapeMap.put("none", Shape.NONE);
+            shapeMap.put("underline", Shape.UNDERLINE);
+            shapeMap.put("cylinder", Shape.CYLINDER);
+            shapeMap.put("note", Shape.NOTE);
+            shapeMap.put("tab", Shape.TAB);
+            shapeMap.put("folder", Shape.FOLDER);
+            shapeMap.put("box3d", Shape.BOX_3D);
+            shapeMap.put("component", Shape.COMPONENT);
+            shapeMap.put("promoter", Shape.PROMOTER);
+            shapeMap.put("cds", Shape.CDS);
+            shapeMap.put("terminator", Shape.TERMINATOR);
+            shapeMap.put("utr", Shape.UTR);
+            shapeMap.put("primersite", Shape.PRIMER_SITE);
+            shapeMap.put("restrictionsite", Shape.RESTRICTION_SITE);
+            shapeMap.put("fivepoverhang", Shape.FIVE_P_OVERHANG);
+            shapeMap.put("threepoverhang", Shape.THREE_P_OVERHANG);
+            shapeMap.put("noverhang", Shape.N_OVERHANG);
+            shapeMap.put("assembly", Shape.ASSEMBLY);
+            shapeMap.put("signature", Shape.SIGNATURE);
+            shapeMap.put("insulator", Shape.INSULATOR);
+            shapeMap.put("ribosite", Shape.RIBO_SITE);
+            shapeMap.put("rnastab", Shape.RNA_STAB);
+            shapeMap.put("proteasesite", Shape.PROTEASE_SITE);
+            shapeMap.put("proteinstab", Shape.PROTEIN_STAB);
+            shapeMap.put("rpromoter", Shape.R_PROMOTER);
+            shapeMap.put("rarrow", Shape.R_ARROW);
+            shapeMap.put("larrow", Shape.L_ARROW);
+            shapeMap.put("lpromoter", Shape.L_PROMOTER);
+        }
+
+        public static Shape getShape(String key){
+            return shapeMap.getOrDefault(key, Shape.BOX);
+        }
     }
 }

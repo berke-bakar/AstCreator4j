@@ -10,9 +10,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
+import java.util.Properties;
 
 public class AstCreator {
-    public static void createAst(Path inputPath, Path outputPath) {
+    public static void createAst(Path inputPath, Path outputPath, Properties properties) {
         try {
             String sourceCode = Files.readString(inputPath);
             ASTParser parser = ASTParser.newParser(AST.JLS19);
@@ -28,27 +29,26 @@ public class AstCreator {
             parser.setKind(ASTParser.K_CLASS_BODY_DECLARATIONS);
 
             TypeDeclaration typeDeclaration = (TypeDeclaration) parser.createAST(null);
-            GraphicalAstVisitor visitor = new GraphicalAstVisitor();
+            GraphicalAstVisitor visitor = new GraphicalAstVisitor(properties);
             typeDeclaration.accept(visitor);
 
-            //TODO: Make output type a command line argument with default value of PNG
             Path outputFilePath = outputPath.resolve(inputPath.getFileName().toString().replace(".java", ".png"));
-            File outputFile = null;
-            if (Files.notExists(outputFilePath)){
+            File outputFile;
+            if (Files.notExists(outputFilePath)) {
                 outputFile = Files.createFile(outputFilePath).toFile();
-            }
-            else {
+            } else {
                 outputFile = outputFilePath.toFile();
             }
 
             MutableGraph astGraph = visitor.getGraph();
-            //TODO: Make width user defined from command line
-            //TODO: Make node type coloring configurable from a file
-            Graphviz.fromGraph(astGraph).width(1920).height(1080).render(Format.PNG).toFile(outputFile);
+            Graphviz.fromGraph(astGraph)
+                    .width(Integer.parseInt(properties.getProperty("output.width", "224")))
+                    .height(Integer.parseInt(properties.getProperty("output.height", "224")))
+                    .render(Format.PNG).toFile(outputFile);
 
         } catch (IOException e) {
             System.err.println("An error occurred while writing to file: " + e.getMessage());
-        } catch (GraphvizException e){
+        } catch (GraphvizException e) {
             System.err.println("An error occurred while creating AST for " + inputPath.getFileName().toString() + " Message: " + e.getMessage());
         }
     }

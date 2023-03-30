@@ -3,6 +3,7 @@ package com.berkebakar.AstCreator;
 import guru.nidi.graphviz.attribute.Color;
 import guru.nidi.graphviz.attribute.Label;
 import guru.nidi.graphviz.attribute.Shape;
+import guru.nidi.graphviz.attribute.Style;
 import guru.nidi.graphviz.model.MutableGraph;
 import guru.nidi.graphviz.model.MutableNode;
 import org.eclipse.jdt.core.dom.*;
@@ -31,10 +32,11 @@ public class GraphicalAstVisitor extends ASTVisitor {
 
     private String getNodeLabel(ASTNode node) {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(node.getClass().getSimpleName()).append("\n");
+        stringBuilder.append(node.getClass().getSimpleName());
 
         // print details if user declared output.detailed in properties file
         if (Boolean.parseBoolean(properties.getProperty("output.detailed", "false"))) {
+            stringBuilder.append("\n");
             switch (node.getNodeType()) {
                 case ASTNode.TYPE_DECLARATION -> {
                     TypeDeclaration typeDeclaration = (TypeDeclaration) node;
@@ -127,15 +129,17 @@ public class GraphicalAstVisitor extends ASTVisitor {
     private void addNode(ASTNode node) {
         Shape nodeShape = ShapeMap.getShape(properties.getProperty(node.getClass().getSimpleName() + ".shape", "box"));
         Color nodeColor = Color.named(properties.getProperty(node.getClass().getSimpleName() + ".color", "red"));
-
+        boolean fill = false;
         if (properties.getProperty("output.fillNodes", "true").equals("true")) {
             nodeColor = nodeColor.fill();
+            fill = true;
         }
 
         graph.add(mutNode(Integer.toString(node.hashCode()))
                 .add(Label.of(getNodeLabel(node)))
                 .add(nodeColor)
                 .add(nodeShape)
+                .add(fill ? Style.FILLED : Style.SOLID)
         );
     }
 

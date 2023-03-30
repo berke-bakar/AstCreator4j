@@ -50,3 +50,7 @@ By default, output PNG is 224x224, because ResNet50 accepts this image size.
 
 *IMPORTANT:* Do not forget to recompile your project after changing the properties file, or you can simply change the
 properties file in `build/install/AstCreator4j/bin`.
+
+### Deleted config.properties?
+
+Do not worry, if AstCreator4j cannot find the `config.properties` file, it will generate a new one with default values.

@@ -1,18 +1,25 @@
 # AstCreator4j
-This tool is created for research about bug detection using machine learning. Tool generates Abstract Syntax Tree (AST) from given `*.java` file(s).
-For currently planned version the given `*.java` file **must** only include function implementation. Example can be found under `src/java/resources`. 
+
+This tool is created for research about bug detection using machine learning. Tool generates Abstract Syntax Tree (AST)
+from given `*.java` file(s) and save them as PNG file.
+For currently planned version the given `*.java` file **must** only include function implementation. Example can be
+found under `src/main/java/resources/1.java`.
 
 # Requirements
+
 This code is only tested with Java 17. You also need Gradle on your system.
 
 # Installation via Gradle
+
 After downloading/cloning the code, go to terminal and open the root directory of the project:
 
-`.\gradlew installDist` if on Windows, `./gradlew installDist` if on Linux/MacOS. This will compile the project and generate executable scripts for you.
+`.\gradlew installDist` if on Windows, `./gradlew installDist` if on Linux/macOS. This will compile the project and
+generate executable scripts for you.
 
 Then go to `build/install/AstCreator4j/bin` directory in your terminal. You will see `AstCreator4j` executable file.
 
 # Command line (CLI) Usage
+
 On Windows:
 `.\AstCreator4j [-f/--file] "path_to_java_file" or [-d/--directory] "directory_path_including_java_files" [-o/--outputDir] "path_to_output_directory"`
 
@@ -25,5 +32,21 @@ Options:
 
 `-d/--directory` Path to a directory that includes .java file(s). Cannot be used together with -f/--file option.
 
-`-o/--outputDir` (Optional) Path to write generated AST JSON files. If not given, directory given by -f or -d will be used.
+`-o/--outputDir` (Optional) Path to write generated AST JSON files. If not given, directory given by -f or -d will be
+used.
 
+`-help/--help` Prints the help text. Explanation of the arguments can be found here.
+
+# Output Modification
+
+You can customize your output graph by modifying `config.properties` file under `src/main/java/resources`.
+
+This file is read when generating the ASTs. You can change the shape and color of each visited node.
+Height and width of the output can also be changed from here. If you do not want to fill nodes you can turn it off from
+here as well (simply change `output.fillNodes` to `false`). If you want more details about the node you can also
+configure that by changing `output.detailed` to `true`.
+
+By default, output PNG is 224x224, because ResNet50 accepts this image size.
+
+*IMPORTANT:* Do not forget to recompile your project after changing the properties file, or you can simply change the
+properties file in `build/install/AstCreator4j/bin`.

@@ -166,6 +166,7 @@ public class Main {
             props.setProperty("output.width", "224");
             props.setProperty("output.detailed", "false");
             props.setProperty("output.fillNodes", "true");
+            props.setProperty("output.includeExpressions", "true");
             // Default shape values
             props.setProperty("TypeDeclaration.shape", "true");
             props.setProperty("MethodDeclaration.shape", "box");

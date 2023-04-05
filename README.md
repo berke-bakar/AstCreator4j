@@ -18,7 +18,7 @@ generate executable scripts for you.
 
 Then go to `build/install/AstCreator4j/bin` directory in your terminal. You will see `AstCreator4j` executable file.
 Also `config.properties` file will be here. Usage of `config.properties` is mentioned
-in [Output Modification](#output-modification)
+in [Output Modification](#output-modification) section.
 
 # Command line (CLI) Usage
 

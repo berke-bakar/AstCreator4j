@@ -17,6 +17,8 @@ After downloading/cloning the code, go to terminal and open the root directory o
 generate executable scripts for you.
 
 Then go to `build/install/AstCreator4j/bin` directory in your terminal. You will see `AstCreator4j` executable file.
+Also `config.properties` file will be here. Usage of `config.properties` is mentioned
+in [Output Modification](#output-modification)
 
 # Command line (CLI) Usage
 
@@ -24,7 +26,7 @@ On Windows:
 `.\AstCreator4j [-f/--file] "path_to_java_file" or [-d/--directory] "directory_path_including_java_files" [-o/--outputDir] "path_to_output_directory"`
 
 On Linux/MacOS:
-`.\AstCreator4j [-f/--file] "path_to_java_file" or [-d/--directory] "directory_path_including_java_files" [-o/--outputDir] "path_to_output_directory"`
+`./AstCreator4j [-f/--file] "path_to_java_file" or [-d/--directory] "directory_path_including_java_files" [-o/--outputDir] "path_to_output_directory"`
 
 Options:
 
@@ -39,12 +41,17 @@ used.
 
 # Output Modification
 
-You can customize your output graph by modifying `config.properties` file under `src/main/java/resources`.
+Before compilation, you can customize your output graph by modifying `config.properties` file
+under `src/main/java/resources`.
+
+After compilation, you can customize your output graph by modifying `config.properties` file under `build/install`.
 
 This file is read when generating the ASTs. You can change the shape and color of each visited node.
-Height and width of the output can also be changed from here. If you do not want to fill nodes you can turn it off from
+Height and width of the output and nodes can also be changed from here. If you do not want to fill nodes you can turn it
+off from
 here as well (simply change `output.fillNodes` to `false`). If you want more details about the node you can also
-configure that by changing `output.detailed` to `true`.
+configure that by changing `output.detailed` to `true`. If you only want statement level depth in your ASTs,
+set `output.includeExpressions` to `false`.
 
 By default, output PNG is 224x224, because ResNet50 accepts this image size.
 

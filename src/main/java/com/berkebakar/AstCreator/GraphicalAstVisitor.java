@@ -1,9 +1,6 @@
 package com.berkebakar.AstCreator;
 
-import guru.nidi.graphviz.attribute.Color;
-import guru.nidi.graphviz.attribute.Label;
-import guru.nidi.graphviz.attribute.Shape;
-import guru.nidi.graphviz.attribute.Style;
+import guru.nidi.graphviz.attribute.*;
 import guru.nidi.graphviz.model.MutableGraph;
 import guru.nidi.graphviz.model.MutableNode;
 import org.eclipse.jdt.core.dom.*;
@@ -20,10 +17,13 @@ public class GraphicalAstVisitor extends ASTVisitor {
     private final MutableGraph graph;
     private final Properties properties;
 
+    private final boolean isExpressionsIncluded;
+
     public GraphicalAstVisitor(Properties properties) {
         super(false);
         this.graph = mutGraph("AST").setDirected(true);
         this.properties = properties;
+        this.isExpressionsIncluded = properties.getProperty("output.includeExpressions", "true").equals("true");
     }
 
     public MutableGraph getGraph() {
@@ -128,7 +128,9 @@ public class GraphicalAstVisitor extends ASTVisitor {
 
     private void addNode(ASTNode node) {
         Shape nodeShape = ShapeMap.getShape(properties.getProperty(node.getClass().getSimpleName() + ".shape", "box"));
-        Color nodeColor = Color.named(properties.getProperty(node.getClass().getSimpleName() + ".color", "red"));
+        Color nodeColor = Color.named(properties.getProperty(node.getClass().getSimpleName() + ".color", "white"));
+        int width = Integer.parseInt(properties.getProperty("output.nodeWidth", "2"));
+        int height = Integer.parseInt(properties.getProperty("output.nodeHeight", "2"));
         boolean fill = false;
         if (properties.getProperty("output.fillNodes", "true").equals("true")) {
             nodeColor = nodeColor.fill();
@@ -140,6 +142,7 @@ public class GraphicalAstVisitor extends ASTVisitor {
                 .add(nodeColor)
                 .add(nodeShape)
                 .add(fill ? Style.FILLED : Style.SOLID)
+                .add(Size.mode(Size.Mode.FIXED).size(width, height))
         );
     }
 
@@ -342,6 +345,276 @@ public class GraphicalAstVisitor extends ASTVisitor {
     public boolean visit(YieldStatement node) {
         addNode(node);
         addEdge(getParentInGraph(node), node);
+        return true;
+    }
+
+    @Override
+    public boolean visit(ArrayAccess node) {
+        if (isExpressionsIncluded){
+            addNode(node);
+            addEdge(getParentInGraph(node), node);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean visit(ArrayCreation node) {
+        if (isExpressionsIncluded){
+            addNode(node);
+            addEdge(getParentInGraph(node), node);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean visit(ArrayInitializer node) {
+        if (isExpressionsIncluded){
+            addNode(node);
+            addEdge(getParentInGraph(node), node);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean visit(Assignment node) {
+        if (isExpressionsIncluded){
+            addNode(node);
+            addEdge(getParentInGraph(node), node);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean visit(VariableDeclarationExpression node) {
+        if (isExpressionsIncluded){
+            addNode(node);
+            addEdge(getParentInGraph(node), node);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean visit(TypeMethodReference node) {
+        if (isExpressionsIncluded){
+            addNode(node);
+            addEdge(getParentInGraph(node), node);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean visit(TypeLiteral node) {
+        if (isExpressionsIncluded){
+            addNode(node);
+            addEdge(getParentInGraph(node), node);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean visit(ThisExpression node) {
+        if (isExpressionsIncluded){
+            addNode(node);
+            addEdge(getParentInGraph(node), node);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean visit(SuperMethodInvocation node) {
+        if (isExpressionsIncluded){
+            addNode(node);
+            addEdge(getParentInGraph(node), node);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean visit(SuperMethodReference node) {
+        if (isExpressionsIncluded){
+            addNode(node);
+            addEdge(getParentInGraph(node), node);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean visit(SuperFieldAccess node) {
+        if (isExpressionsIncluded){
+            addNode(node);
+            addEdge(getParentInGraph(node), node);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean visit(StringLiteral node) {
+        if (isExpressionsIncluded){
+            addNode(node);
+            addEdge(getParentInGraph(node), node);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean visit(PrefixExpression node) {
+        if (isExpressionsIncluded){
+            addNode(node);
+            addEdge(getParentInGraph(node), node);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean visit(PostfixExpression node) {
+        if (isExpressionsIncluded){
+            addNode(node);
+            addEdge(getParentInGraph(node), node);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean visit(ParenthesizedExpression node) {
+        if (isExpressionsIncluded){
+            addNode(node);
+            addEdge(getParentInGraph(node), node);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean visit(NumberLiteral node) {
+        if (isExpressionsIncluded){
+            addNode(node);
+            addEdge(getParentInGraph(node), node);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean visit(NullLiteral node) {
+        if (isExpressionsIncluded){
+            addNode(node);
+            addEdge(getParentInGraph(node), node);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean visit(MethodRef node) {
+        if (isExpressionsIncluded){
+            addNode(node);
+            addEdge(getParentInGraph(node), node);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean visit(MethodInvocation node) {
+        if (isExpressionsIncluded){
+            addNode(node);
+            addEdge(getParentInGraph(node), node);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean visit(LambdaExpression node) {
+        if (isExpressionsIncluded){
+            addNode(node);
+            addEdge(getParentInGraph(node), node);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean visit(InstanceofExpression node) {
+        if (isExpressionsIncluded){
+            addNode(node);
+            addEdge(getParentInGraph(node), node);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean visit(InfixExpression node) {
+        if (isExpressionsIncluded){
+            addNode(node);
+            addEdge(getParentInGraph(node), node);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean visit(FieldAccess node) {
+        if (isExpressionsIncluded){
+            addNode(node);
+            addEdge(getParentInGraph(node), node);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean visit(ExpressionMethodReference node) {
+        if (isExpressionsIncluded){
+            addNode(node);
+            addEdge(getParentInGraph(node), node);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean visit(CreationReference node) {
+        if (isExpressionsIncluded){
+            addNode(node);
+            addEdge(getParentInGraph(node), node);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean visit(ConditionalExpression node) {
+        if (isExpressionsIncluded){
+            addNode(node);
+            addEdge(getParentInGraph(node), node);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean visit(ClassInstanceCreation node) {
+        if (isExpressionsIncluded){
+            addNode(node);
+            addEdge(getParentInGraph(node), node);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean visit(CharacterLiteral node) {
+        if (isExpressionsIncluded){
+            addNode(node);
+            addEdge(getParentInGraph(node), node);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean visit(CastExpression node) {
+        if (isExpressionsIncluded){
+            addNode(node);
+            addEdge(getParentInGraph(node), node);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean visit(BooleanLiteral node) {
+        if (isExpressionsIncluded){
+            addNode(node);
+            addEdge(getParentInGraph(node), node);
+        }
         return true;
     }
 

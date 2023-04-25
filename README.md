@@ -51,7 +51,9 @@ Height and width of the output and nodes can also be changed from here. If you d
 off from
 here as well (simply change `output.fillNodes` to `false`). If you want more details about the node you can also
 configure that by changing `output.detailed` to `true`. If you only want statement level depth in your ASTs,
-set `output.includeExpressions` to `false`.
+set `output.includeExpressions` to `false`. Also you can specify which nodes you want to add to your graph by setting 
+`<NodeName>.visit=false`. The default values of the visited nodes might seem random, but it is for generating condensed ASTs.
+If you want a full detailed ASTs you can set each `.visit` property of each node to `true`.
 
 By default, output PNG is 224x224, because ResNet50 accepts this image size.
 

@@ -127,6 +127,10 @@ public class GraphicalAstVisitor extends ASTVisitor {
     }
 
     private void addNode(ASTNode node) {
+        if (properties.getProperty(node.getClass().getSimpleName() + ".visit", "false").equals("false")){
+            return;
+        }
+
         Shape nodeShape = ShapeMap.getShape(properties.getProperty(node.getClass().getSimpleName() + ".shape", "box"));
         Color nodeColor = Color.named(properties.getProperty(node.getClass().getSimpleName() + ".color", "white"));
         int width = Integer.parseInt(properties.getProperty("output.nodeWidth", "2"));
@@ -152,6 +156,10 @@ public class GraphicalAstVisitor extends ASTVisitor {
     }
 
     private ASTNode getParentInGraph(ASTNode node) {
+        if (properties.getProperty(node.getClass().getSimpleName() + ".visit", "false").equals("false")){
+            return null;
+        }
+
         ASTNode currentParentNode = node.getParent();
 
         while (currentParentNode != null) {
@@ -615,6 +623,48 @@ public class GraphicalAstVisitor extends ASTVisitor {
             addNode(node);
             addEdge(getParentInGraph(node), node);
         }
+        return true;
+    }
+
+    @Override
+    public boolean visit(ConstructorInvocation node) {
+        addNode(node);
+        addEdge(getParentInGraph(node), node);
+        return true;
+    }
+
+    @Override
+    public boolean visit(SuperConstructorInvocation node) {
+        addNode(node);
+        addEdge(getParentInGraph(node), node);
+        return true;
+    }
+
+    @Override
+    public boolean visit(SwitchCase node) {
+        addNode(node);
+        addEdge(getParentInGraph(node), node);
+        return true;
+    }
+
+    @Override
+    public boolean visit(VariableDeclarationFragment node) {
+        addNode(node);
+        addEdge(getParentInGraph(node), node);
+        return true;
+    }
+
+    @Override
+    public boolean visit(FieldDeclaration node) {
+        addNode(node);
+        addEdge(getParentInGraph(node), node);
+        return true;
+    }
+
+    @Override
+    public boolean visit(EnumDeclaration node) {
+        addNode(node);
+        addEdge(getParentInGraph(node), node);
         return true;
     }
 
